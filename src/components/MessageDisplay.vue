@@ -38,11 +38,12 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'getParticipantById'
+            'getParticipantById',
+            'messages'
         ]),
-        messages: function(){
+        /* messages: function(){
             return this.$store.state.messages;
-        },
+        }, */
         myself: function(){
             return this.$store.state.myself;
         }
@@ -101,7 +102,6 @@ export default {
 
 .message-text > p {
     margin: 5px 0 5px 0;
-    height: 100%;
 }
 
 .message-timestamp{
