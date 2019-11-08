@@ -1,13 +1,7 @@
 <template>
-    <div ref="containerMessageDisplay" :style="{background: colors.message.messagesDisplay.bg}"
-         class="container-message-display" @scroll="updateScrollState">
-        <div v-if="loading" class="loader">
-            <div class="message-loading"></div>
-        </div>
-        <div v-for="(message, index) in messages" :key="index" class="message-container"
-             :class="{'my-message': message.myself, 'other-message': !message.myself}">
-            <div class="message-text"
-                 :style="{background: !message.myself?colors.message.others.bg: colors.message.myself.bg, color: !message.myself?colors.message.others.text: colors.message.myself.text}">
+    <div ref="containerMessageDisplay" :style="{background: colors.message.messagesDisplay.bg}" class="container-message-display" @scroll="updateScrollState">
+        <div v-for="(message, index) in messages" :key="index" class="message-container" :class="{'my-message': message.myself, 'other-message': !message.myself}">
+            <div class="message-text" :style="{background: !message.myself?colors.message.others.bg: colors.message.myself.bg, color: !message.myself?colors.message.others.text: colors.message.myself.text}">
                 <p v-if="!message.myself" class="message-username">{{getParticipantById(message.participantId).name}}</p>
                 <p v-else class="message-username">{{myself.name}}</p>
                 <p>{{message.content}}</p>
@@ -22,10 +16,9 @@
 </template>
 
 <script>
-    import {mapGetters, mapMutations} from 'vuex';
-
+    import { mapGetters } from 'vuex';
     export default {
-        props: {
+        props:{
             colors: {
                 type: Object,
                 required: true
@@ -35,58 +28,46 @@
                 required: false,
                 default: false
             },
-            loadMoreMessages: {
-                type: Function,
-                required: false,
-                default: null
-            }
+
         },
-        data() {
+        data(){
             return {
-                updateScroll: true,
-                lastMessage: null,
-                loading: false
+                updateScroll: false,
+                lastMessage: null
             }
         },
         computed: {
             ...mapGetters([
                 'getParticipantById',
-                'messages',
-                'myself'
+                'messages'
             ]),
+            /* messages: function(){
+                return this.$store.state.messages;
+            }, */
+            myself: function(){
+                return this.$store.state.myself;
+            }
         },
         mounted() {
             this.goToBottom();
-            this.$refs.containerMessageDisplay.dispatchEvent(new CustomEvent('scroll'));
         },
-        updated() {
-            if (this.messages.length && this.messages[this.messages.length - 1] !== this.lastMessage && this.updateScroll) {
+        updated(){
+            if(this.messages.length && this.messages[this.messages.length-1] !== this.lastMessage || this.updateScroll){
                 this.goToBottom();
-                if (this.messages.length) {
-                    this.lastMessage = this.messages[this.messages.length - 1]
-                }
+                this.lastMessage = this.messages[this.messages.length-1]
             }
         },
-        methods: {
-            ...mapMutations([
-                'setMessages',
-            ]),
-            updateScrollState({target: {scrollTop, clientHeight, scrollHeight}}) {
-                this.updateScroll = scrollTop + clientHeight >= scrollHeight;
-
-                if (typeof this.loadMoreMessages === 'function' && scrollTop < 20) {
-                    this.loading = true;
-                    this.loadMoreMessages((messages) => {
-                        if (Array.isArray(messages) && messages.length > 0) {
-                            this.setMessages([...messages, ...this.messages]);
-                        }
-                        this.loading = false;
-                    });
+        methods:{
+            updateScrollState({ target: { scrollTop, clientHeight, scrollHeight }}) {
+                if (scrollTop + clientHeight >= scrollHeight) {
+                    this.updateScroll = true;
+                } else {
+                    this.updateScroll = false;
                 }
             },
             goToBottom() {
-                let scrollDiv = this.$refs.containerMessageDisplay;
-                scrollDiv.scrollTop = scrollDiv.scrollHeight;
+                let scrollDiv = this.$refs.containerMessageDisplay
+                scrollDiv.scrollTop = scrollDiv.scrollHeight
 
                 this.updateScroll = false;
             }
@@ -96,6 +77,10 @@
 
 <style lang="less">
     .quick-chat-container .container-message-display {
+        /* display: flex;
+        flex-direction: column;
+        justify-content: flex-end; */
+        /* align-items: center; */
         flex: 1;
         overflow-y: scroll;
         overflow-x: hidden;
@@ -152,12 +137,13 @@
         }
 
         .other-message > .message-text {
+            /* background: #fb4141;  */
             color: #fff;
-            border-bottom-left-radius: 0;
+            border-bottom-left-radius: 0px;
         }
 
         .my-message > .message-text {
-            border-bottom-right-radius: 0;
+            border-bottom-right-radius: 0px;
         }
 
         .message-container {
@@ -184,23 +170,12 @@
             border-left-color: rgb(59, 59, 59);
             border-radius: 50%;
             margin-left: 5px;
-            display: inline-block;
             animation: spin 1.3s ease infinite;
-        }
 
-        .loader .message-loading {
-            width: 16px;
-            height: 16px;
-            margin: 5px 0 0 0;
         }
     }
-
-    @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-        100% {
-            transform: rotate(360deg);
-        }
+    @keyframes spin{
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
 </style>

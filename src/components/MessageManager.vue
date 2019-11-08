@@ -11,7 +11,6 @@
         </div>
     </div>
 </template>
-
 <script>
     import {mapMutations} from 'vuex'
     import moment from 'moment'
@@ -56,10 +55,10 @@
             }
         },
         computed: {
-            myself() {
+            myself: function () {
                 return this.$store.state.myself;
             },
-            placeholder() {
+            placeholder: function () {
                 return this.$store.state.placeholder;
             }
         },
@@ -70,14 +69,14 @@
             ...mapMutations([
                 'newMessage'
             ]),
-            sendMessage() {
+            sendMessage: function () {
                 this.textInput = this.$refs.userInput.textContent;
                 this.$refs.userInput.textContent = '';
 
                 if (this.textInput) {
-                    let inputLen = this.textInput.length;
-                    let inputText = this.textInput;
-                    if (this.textInput[inputLen - 1] === '\n') {
+                    let inputLen = this.textInput.length
+                    let inputText = this.textInput
+                    if (this.textInput[inputLen - 1] == '\n') {
                         inputText = inputText.slice(0, inputLen - 1)
                     }
                     let message = {
@@ -87,18 +86,18 @@
                         timestamp: moment(),
                         uploaded: false,
                         viewed: false
-                    };
-                    this.onMessageSubmit(message);
+                    }
+                    this.onMessageSubmit(message)
                     this.newMessage(message)
                 }
             },
             handleType: function (e) {
                 this.onType(e);
+                //console.log(e)
             }
         }
     }
 </script>
-
 <style lang="less">
     .quick-chat-container .container-message-manager {
         height: 65px;
@@ -141,6 +140,7 @@
         .message-input:empty:before {
             content: attr(placeholder);
             display: block; /* For Firefox */
+            /* color: rgba(86, 88, 103, 0.3); */
             filter: contrast(15%);
             outline: none;
         }
@@ -159,6 +159,7 @@
         }
 
         .icon-send-message {
+            /* color:#b91010; */
             width: 20px;
             cursor: pointer;
             opacity: 0.7;

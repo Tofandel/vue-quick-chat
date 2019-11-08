@@ -1,28 +1,23 @@
 <template>
-    <div class="quick-chat-container"
-         :style="{'border-bottom-left-radius': borderStyle.bottomLeft, 'border-bottom-right-radius': borderStyle.bottomRight, 'border-top-right-radius': borderStyle.topRight, 'border-top-left-radius': borderStyle.topLeft}">
-        <Header :colors="colors" :border-style="borderStyle" :hide-close-button="hideCloseButton"
-                :close-button-icon-size="closeButtonIconSize" :on-close="onClose">
+    <div class="quick-chat-container" :style="{'border-bottom-left-radius': borderStyle.bottomLeft, 'border-bottom-right-radius': borderStyle.bottomRight, 'border-top-right-radius': borderStyle.topRight, 'border-top-left-radius': borderStyle.topLeft}">
+        <Header :colors="colors" :border-style="borderStyle" :hide-close-button="hideCloseButton" :close-button-icon-size="closeButtonIconSize" :on-close="onClose">
             <template #header>
                 <slot name="header"></slot>
             </template>
         </Header>
-        <MessageDisplay :colors="colors" :async-mode="asyncMode" :load-more-messages="loadMoreMessages"/>
-        <MessageManager :on-type="onType" :on-message-submit="onMessageSubmit" :colors="colors"
-                        :border-style="borderStyle" :submit-icon-size="submitIconSize"/>
+        <MessageDisplay :colors="colors" :async-mode="asyncMode"/>
+        <MessageManager :on-type="onType" :on-message-submit="onMessageSubmit" :colors="colors" :border-style="borderStyle" :submit-icon-size="submitIconSize"/>
     </div>
 </template>
-
 <script>
     import Header from './Header.vue'
     import MessageDisplay from './MessageDisplay.vue'
     import MessageManager from './MessageManager.vue'
-    import {mapMutations} from 'vuex'
+    import { mapMutations } from 'vuex'
     import store from '../store'
-
     export default {
         name: 'chat',
-        components: {
+        components:{
             Header,
             MessageDisplay,
             MessageManager
@@ -40,7 +35,7 @@
                 type: Object,
                 required: true
             },
-            chatTitle: {
+            chatTitle:{
                 type: String,
                 required: false,
                 default: ''
@@ -67,7 +62,7 @@
             borderStyle: {
                 type: Object,
                 required: false,
-                default: () => {
+                default: () =>{
                     return {
                         topLeft: "10px",
                         topRight: "10px",
@@ -100,22 +95,17 @@
                 type: Boolean,
                 required: false,
                 default: false
-            },
-            loadMoreMessages: {
-                type: Function,
-                required: false,
-                default: null
             }
         },
         watch: {
-            messages() {
+            messages: function(){
                 this.setMessages(this.messages);
             }
         },
         beforeCreate() {
             this.$store = store();
         },
-        created() {
+        created(){
             this.setParticipants(this.participants);
             this.setMyself(this.myself);
             this.setMessages(this.messages);
@@ -137,11 +127,14 @@
 <style lang="less">
     .quick-chat-container {
         display: flex;
+        /* width: 350px;
+        height: 500px; */
         width: 100%;
         height: 100%;
         background: #f0eeee;
         flex-direction: column;
         align-items: stretch;
+        /*border: solid 1px #b6b2b2;*/
         overflow: hidden;
     }
 </style>

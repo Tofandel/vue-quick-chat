@@ -1,31 +1,31 @@
 <template>
     <div class="header-container" :style="{background: colors.header.bg}">
-        <slot name="header" :colors="colors" :chatTitle="chatTitle"
-              :participants="participants"
-              :myself="myself"></slot>
+        <slot name="header" :colors="colors" :chatTitle="chatTitle" :participants="participants" :myself="myself"></slot>
         <div v-if="!hasHeaderSlot" class="header-title">
             <p class="header-title-text" :style="{color: colors.header.text}">{{chatTitle}}</p>
             <p class="header-paticipants-text">
-                <span>{{myself.name}}, </span>
-                <span v-for="(participant, index) in participants" :key="participant.id">{{participant.name}}{{participants.length - index - 1 ? ', ' : ''}}</span>
+                <span>
+                    {{`${myself.name}, `}}
+                </span>
+                <span v-for="(participant, index) in participants" :key="participant.id">
+                    {{participants.length-1 != index?`${participant.name}, ` : participant.name}}
+                </span>
             </p>
         </div>
 
         <div v-if="!hideCloseButton && !hasHeaderSlot" class="header-exit">
             <slot name="close-button" :onClose="onClose">
-                <a class="header-exit-button" href="#" :style="{fontSize: closeButtonIconSize}"
-                   @click.prevent="onClose">✕</a>
+                <a class="header-exit-button" href="#" :style="{fontSize: closeButtonIconSize}" @click.prevent="onClose">✕</a>
             </slot>
         </div>
     </div>
 </template>
-
 <script>
     /*
     * TODO: improve support for more than 10 participants (the names list may break in some cases)
     */
     export default {
-        props: {
+        props:{
             colors: {
                 type: Object,
                 required: true
@@ -33,7 +33,7 @@
             borderStyle: {
                 type: Object,
                 required: false,
-                default: () => {
+                default: () =>{
                     return {
                         topLeft: "10px",
                         topRight: "10px",
@@ -59,16 +59,16 @@
             }
         },
         computed: {
-            participants() {
+            participants: function(){
                 return this.$store.state.participants;
             },
-            myself() {
+            myself: function(){
                 return this.$store.state.myself;
             },
-            chatTitle() {
+            chatTitle: function(){
                 return this.$store.state.chatTitle;
             },
-            hasHeaderSlot: function () {
+            hasHeaderSlot: function(){
                 return !!this.$slots['header'];
             }
         }
@@ -77,6 +77,7 @@
 
 <style lang="less">
     .quick-chat-container .header-container {
+        /* background: #d30303; */
         height: 70px;
         display: flex;
         padding: 0 20px 0 10px;
@@ -92,6 +93,7 @@
         }
 
         .header-title-text {
+            /* color: #fff; */
             margin-bottom: 0;
         }
 
